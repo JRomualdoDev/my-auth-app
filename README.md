@@ -2,8 +2,7 @@
 
 * [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
-* [![Prisma][https://www.prisma.io/]][Prisma-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+* [![Prisma][Prisma.js]][Prisma-url]
 
 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
