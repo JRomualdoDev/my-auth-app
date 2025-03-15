@@ -13,4 +13,4 @@
 [Prisma.js]: https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=fff
 [Prisma-url]: https://www.prisma.io/
 [Zod]: https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=fff
-[Prisma-url]: https://www.prisma.io/
+[Zod-url]: https://www.prisma.io/
