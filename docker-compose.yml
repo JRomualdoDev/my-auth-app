@@ -1,0 +1,62 @@
+# Docker Compose configuration for NextJS with Prisma and PostgreSQL
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:17
+    container_name: auth_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - data_sql:/var/lib/postgresql/data
+    networks:
+      - auth_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # NextJS Application
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+    container_name: auth_nextjs
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NODE_ENV=development
+    depends_on:
+      - db
+    networks:
+      - auth_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    # Add command to run both Next.js and Prisma Studio
+    command: >
+      sh -c "npx prisma generate &&
+             npx prisma db push &&
+             npx prisma studio --port 5555 --hostname 0.0.0.0 &
+             npm run dev"
+
+volumes:
+  data_sql:
+
+networks:
+  auth_network:
+    driver: bridge

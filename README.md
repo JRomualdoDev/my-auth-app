@@ -4,6 +4,7 @@
 * [![React][React.js]][React-url]
 * [![Prisma][Prisma.js]][Prisma-url]
 * [![Zod][Zod]][Zod-url]
+* [![Postgres][Postgres]][Postgres-url]
 
 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
@@ -14,3 +15,5 @@
 [Prisma-url]: https://www.prisma.io/
 [Zod]: https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=fff
 [Zod-url]: https://www.prisma.io/
+[Postgres]: https://img.shields.io/badge/Postgres-4169E1?style=for-the-badge&logo=postgresql&logoColor=fff
+[Postgres-url]: https://www.postgresql.org/
