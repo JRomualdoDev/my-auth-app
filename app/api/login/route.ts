@@ -9,36 +9,41 @@ export async function POST(request: Request) {
     try {
         const validatedData = loginSchema.parse(body);
 
-        const user = prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 email: validatedData.email
             }
         });
 
-        console.log(user);
-        return
+        console.log('user:::::::::::>>>>000000000 ', user);
 
-        const isValid = await verifyPassword(validatedData.password, user.password);
+        // const isValid = await verifyPassword(validatedData.password, user.password);
 
-        if(!isValid) {
-            return NextResponse.json(
-                {
-                    "status": 401,
-                    "error": "Invalid Credentials"
-                }
-            )
-        }
+        // if(!isValid) {
+        //     return NextResponse.json(
+        //         {
+        //             "status": 401,
+        //             "error": "Invalid Credentials"
+        //         }
+        //     )
+        // }
 
-        const { accessToken, refreshToken } = generateTokens(validatedData);
+        // const { accessToken, refreshToken } = generateTokens(validatedData);
             
 
+        // return NextResponse.json(
+        //     {
+        //         "status": "success",
+        //         "accessToken": accessToken,
+        //         headers: {
+        //             'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/`
+        //         }
+        //     }
+        // )
         return NextResponse.json(
             {
-                "status": "success",
-                "accessToken": accessToken,
-                headers: {
-                    'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/`
-                }
+                "status": 200,
+                "data": 'user'
             }
         )
     }
