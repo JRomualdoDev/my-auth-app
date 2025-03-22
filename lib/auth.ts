@@ -1,34 +1,60 @@
 
+import { sign, verify } from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
-import jwt from "jsonwebtoken";
 
-export async function hashPassword(password: string) {
-    return bcryptjs.hash(password, 12);
+// Chaves secretas (idealmente deveriam vir de variáveis de ambiente)
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access_secret';
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh_secret';
+
+// Duração dos tokens
+const ACCESS_TOKEN_EXPIRY = '15m'; // 15 minutos
+const REFRESH_TOKEN_EXPIRY = '7d'; // 7 dias
+
+// Verificar senha
+export async function verifyPassword(
+  plainPassword: string,
+  hashedPassword: string
+): Promise<boolean> {
+  return bcryptjs.compare(plainPassword, hashedPassword);
 }
 
-export async function verifyPassword(password: string, hashedPassword: string) {
-    return bcryptjs.compare(password, hashedPassword);
+// Gerar hash de senha
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return bcryptjs.hash(password, saltRounds);
 }
 
-interface User {
-    email: string;
-    password: string;
-}	
+// Gerar tokens de acesso e refresh
+export function generateTokens(user: { id: string; email: string }) {
+  const accessToken = sign(
+    { id: user.id, email: user.email },
+    ACCESS_TOKEN_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
 
-export function generateTokens(user: User) {
+  const refreshToken = sign(
+    { id: user.id, email: user.email },
+    REFRESH_TOKEN_SECRET,
+    { expiresIn: REFRESH_TOKEN_EXPIRY }
+  );
 
-    const accessTokenSecret = process.env.JWT_ACCESS_SECRET;
-    const refreshTokenSecret = process.env.JWT_REFRESH_SECRET;
+  return { accessToken, refreshToken };
+}
 
-    if (!accessTokenSecret || !refreshTokenSecret) {
-        throw new Error("JWT secret is not defined");
-    }
+// Verificar token de acesso
+export function verifyAccessToken(token: string) {
+  try {
+    return verify(token, ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    throw new Error('Invalid access token');
+  }
+}
 
-    const accessToken = jwt.sign(user, accessTokenSecret , {expiresIn: "15m"});
-    const refreshToken = jwt.sign(user, refreshTokenSecret , {expiresIn: "7d"});
-
-    return {
-        accessToken,
-        refreshToken
-    }
+// Verificar token de refresh
+export function verifyRefreshToken(token: string) {
+  try {
+    return verify(token, REFRESH_TOKEN_SECRET);
+  } catch (error) {
+    throw new Error('Invalid refresh token');
+  }
 }

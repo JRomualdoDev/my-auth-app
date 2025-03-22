@@ -1,35 +1,41 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyAccessToken } from './lib/auth';
 
-export function middleware(request: NextRequest) {
-
-  // Verificar se a rota é privada
+export async function middleware(request: NextRequest) {
   const isPrivateRoute = request.nextUrl.pathname.startsWith('/private');
-  
-  // Verificar se o usuário tem um refreshToken
   const refreshToken = request.cookies.get('refreshToken')?.value;
-
-   // Se a rota for o login e já tiver um token, redirecionar para o dashbooard
-   if (request.nextUrl.pathname === '/' && refreshToken) {
-    const dashboardUrl = new URL('/private/dashboard', request.url);
-    return NextResponse.redirect(dashboardUrl);
+  
+  // Verificar rotas privadas
+  if (isPrivateRoute) {
+    if (!refreshToken) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+    
+    // Verificar token de acesso (opcional, mas aumenta segurança)
+    const authHeader = request.headers.get('authorization');
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      try {
+        verifyAccessToken(token);
+      } catch (error: unknown) {
+        // Token inválido, mas tem refresh token, então deixa passar
+        // O cliente tentará refresh
+      }
+    }
   }
   
-  // Se for rota privada e não tiver token, redirecionar para login
-  if (isPrivateRoute && !refreshToken) {
-    const loginUrl = new URL('/', request.url);
-    return NextResponse.redirect(loginUrl);
+  // Redirecionar usuários autenticados da home para dashboard
+  if (request.nextUrl.pathname === '/' && refreshToken) {
+    return NextResponse.redirect(new URL('/private/dashboard', request.url));
   }
-
+  
   return NextResponse.next();
 }
 
-// Configurar quais rotas o middleware deve processar
 export const config = {
   matcher: [
-    // Aplicar a todas as rotas privadas
     '/private/:path*',
-    // Excluir rotas de API e recursos estáticos
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/',
   ],
 };

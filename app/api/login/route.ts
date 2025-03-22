@@ -19,7 +19,7 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 {
                     "status": 401,
-                    "error": "User not found"
+                    "error": "Invalid Credentials"
                 },
                 { status: 401 }
             )
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
             )
         }
 
-        const { accessToken, refreshToken } = generateTokens(validatedData);
+        const { accessToken, refreshToken } = generateTokens({ id: user.id, email: user.email });
             
         return NextResponse.json(
             {

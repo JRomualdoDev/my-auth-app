@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
+import axios_api  from "../../lib/axios"
 import { loginSchema } from "./login-schema"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useState } from "react"
@@ -36,7 +36,7 @@ export function LoginForm({
     setLoginError(null);
     
     try {
-      const res = await axios.post('/api/login', data);
+      const res = await axios_api.post('/login', data);
 
       if (res.status === 200) {
         // Armazenar token no Zustand store
@@ -49,12 +49,12 @@ export function LoginForm({
         // Usar router para navegação
         router.push('/private/dashboard');
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setLoginError(error.response?.data?.error || 'Login failed. Please try again.');
+    } catch (error: unknown) {
+      if (axios_api.isAxiosError(error)) {
+        setLoginError('Login failed. Please try again.');
       } else {
         setLoginError('An unexpected error occurred');
-        console.error(error);
+        // console.error(error);
       }
     }
   }
