@@ -15,35 +15,46 @@ export async function POST(request: Request) {
             }
         });
 
-        console.log('user:::::::::::>>>>000000000 ', user);
+        if(!user) {
+            return NextResponse.json(
+                {
+                    "status": 401,
+                    "error": "User not found"
+                },
+                { status: 401 }
+            )
+        }
+        const isValid = await verifyPassword(validatedData.password, user.password);
 
-        // const isValid = await verifyPassword(validatedData.password, user.password);
+        if(!isValid) {
+            return NextResponse.json(
+                {
+                    "status": 401,
+                    "error": "Invalid Credentials"
+                }
+            )
+        }
 
-        // if(!isValid) {
-        //     return NextResponse.json(
-        //         {
-        //             "status": 401,
-        //             "error": "Invalid Credentials"
-        //         }
-        //     )
-        // }
-
-        // const { accessToken, refreshToken } = generateTokens(validatedData);
+        const { accessToken, refreshToken } = generateTokens(validatedData);
             
-
-        // return NextResponse.json(
-        //     {
-        //         "status": "success",
-        //         "accessToken": accessToken,
-        //         headers: {
-        //             'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/`
-        //         }
-        //     }
-        // )
         return NextResponse.json(
             {
-                "status": 200,
-                "data": 'user'
+                "status": "success",
+                "user": {
+                    "name": user.name,
+                    "email": user.email,
+                },
+                "accessToken": accessToken
+            },
+            {
+                status: 200,
+                headers: {
+                    // Set the cookie header for the refresh token
+                    // Flag secure to true to ensure the cookie is only sent over HTTPS
+                    // SameSite is set to Strict to prevent CSRF attacks
+                    // Max-age is 7 days in seconds
+                    'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800`
+                }
             }
         )
     }

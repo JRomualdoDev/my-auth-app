@@ -16,30 +16,50 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { loginSchema } from "./login-schema"
+import { useAuthStore } from "@/lib/store/auth-store"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const { handleSubmit, register, formState:{ errors } } = useForm({
     resolver: zodResolver(loginSchema)
   });
 
   async function onSubmit(data: z.infer<typeof loginSchema>) {
-   
+    setLoginError(null);
+    
     try {
       const res = await axios.post('/api/login', data);
+
       if (res.status === 200) {
-        // window.location.href = '/dashboard';
+        // Armazenar token no Zustand store
+        setAuth(res.data.accessToken, {
+          id: res.data.userId || '',
+          name: res.data.name,
+          email: data.email
+        });
+        
+        // Usar router para navegação
+        router.push('/private/dashboard');
       }
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error)) {
+        setLoginError(error.response?.data?.error || 'Login failed. Please try again.');
+      } else {
+        setLoginError('An unexpected error occurred');
+        console.error(error);
+      }
     }
-    console.log(data);
-
   }
 
+  // Resto do componente permanece o mesmo
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -53,7 +73,13 @@ export function LoginForm({
           <form
             onSubmit={handleSubmit(onSubmit)}
           >
+            {loginError && (
+              <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+                {loginError}
+              </div>
+            )}
             <div className="flex flex-col gap-6">
+              {/* Resto do formulário permanece o mesmo */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
