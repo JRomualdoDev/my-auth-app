@@ -19,6 +19,7 @@ import { loginSchema } from "./login-schema"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export function LoginForm({
   className,
@@ -116,9 +117,9 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <Link href="/public/signIn" className="underline underline-offset-4">
                 Sign up
-              </a>
+              </Link>
             </div>
           </form>
         </CardContent>
