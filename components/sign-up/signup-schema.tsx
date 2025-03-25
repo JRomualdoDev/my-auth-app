@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const signInSchema = z.object({
+export const signUpSchema = z.object({
     name: z.string()
      .min(1, { message: "Name is required!" }),
     lastname: z.string()
@@ -14,7 +14,7 @@ export const signInSchema = z.object({
     confirmation_password: z.string()
      .min(1, { message: "Confirmation password is required!" })
      .min(6)
-  }).refine((data) => data.email === data.confirmation_password, {
+  }).refine((data) => data.password === data.confirmation_password, {
     message: "Passwords do not match!",
-    path: ["passwprd","confirmation_password"],
+    path: ["confirmation_password"],
   });

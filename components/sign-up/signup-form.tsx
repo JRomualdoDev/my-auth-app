@@ -1,6 +1,6 @@
 'use client'
 
-import { signInSchema } from '@/components/signIn/signIn-schema';
+import { signUpSchema } from '@/components/sign-up/signup-schema';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAuthStore } from '@/lib/store/auth-store';	
 
-export default function SignInForm({
+export default function SignUpForm({
     className,
     ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
@@ -23,29 +23,22 @@ export default function SignInForm({
     const setAuth = useAuthStore((state) => state.setAuth);
 
     const { handleSubmit, register, formState: { errors} } = useForm({
-        resolver: zodResolver(signInSchema)
+        resolver: zodResolver(signUpSchema)
     });
 
-    async function onSubmit(data: z.infer<typeof signInSchema>) {
+    async function onSubmit(data: z.infer<typeof signUpSchema>) {
+        console.log(data)
         setSignInError(null);
 
         try {
-            const res = await axios_api.post('/auth/login', data);
+            const res = await axios_api.post('/auth/signup', data);
 
-            if (res.status === 200) {
-                // Armazenar token no Zustand store
-                setAuth(res.data.accessToken, {
-                    id: res.data.userId || '',
-                    name: res.data.name,
-                    email: data.email
-                });
-                
-                // Usar router para navegação
-                router.push('/private/dashboard');
+            if (res.status === 201) {               
+                router.push('/');
             }
         } catch(error: unknown) {
             if (axios_api.isAxiosError(error)){
-                setSignInError('Sign In failed. Please try again.');
+                setSignInError((error.response?.data as { message?: string })?.message || 'An error occurred during sign up');
             } else {
                 setSignInError('An unexpected error occurred');
                 // console.error(error);
@@ -63,7 +56,9 @@ export default function SignInForm({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form 
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         {signInError && (
                             <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
                                 {signInError}

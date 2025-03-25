@@ -13,27 +13,26 @@ export default function DashboardPage() {
   const { user, clearAuth } = useAuthStore()
   const router = useRouter()
 
-  // useEffect(() => {
-  //   // Verify authentication on component mount
-  //   setIsLoading(false)
-  // }, [])
+  useEffect(() => {
+    // Verify authentication on component mount
+    setIsLoading(false)
+  }, [user])
 
   const handleLogout = async () => {
     try {
-      await axios_api.post('/auth/logout')
+      await axios_api.post('/auth/logout');
       clearAuth()
       router.push('/')
     } catch (error) {
       console.error('Logout failed', error)
-      // Still clear auth on the client side even if the API call fails
       clearAuth()
       router.push('/')
     }
   }
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>
-  // }
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="container mx-auto py-10">

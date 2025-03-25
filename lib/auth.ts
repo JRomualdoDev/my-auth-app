@@ -20,7 +20,7 @@ export async function verifyPassword(
 
 // Gerar hash de senha
 export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10;
+  const saltRounds = 12;
   return bcryptjs.hash(password, saltRounds);
 }
 

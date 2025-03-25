@@ -42,9 +42,9 @@ export function LoginForm({
       if (res.status === 200) {
         // Armazenar token no Zustand store
         setAuth(res.data.accessToken, {
-          id: res.data.userId || '',
-          name: res.data.name,
-          email: data.email
+          id: res.data.user.id || '',
+          name: res.data.user.name,
+          email: res.data.user.email
         });
         
         // Usar router para navegação
