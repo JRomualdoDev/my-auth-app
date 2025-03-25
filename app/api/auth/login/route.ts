@@ -19,7 +19,6 @@ export async function POST(request: Request) {
         if(!user) {
             return NextResponse.json(
                 {
-                    "status": 401,
                     "error": "Invalid Credentials"
                 },
                 { status: 401 }
@@ -30,9 +29,9 @@ export async function POST(request: Request) {
         if(!isValid) {
             return NextResponse.json(
                 {
-                    "status": 401,
                     "error": "Invalid Credentials"
-                }
+                },
+                { status: 401 }
             )
         }
 
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
                     "email": user.email,
                 },
                 "accessToken": accessToken,
-                "csrfToken": csrfToken 
+                // "csrfToken": csrfToken 
             },
             {
                 status: 200,
@@ -64,10 +63,10 @@ export async function POST(request: Request) {
     catch(error)
     {
         return NextResponse.json(
-            {
-                "status": 500,
+            {              
                 "error": "Server Error"
-            }
+            },
+            { status: 500 }
         )
     }   
 }

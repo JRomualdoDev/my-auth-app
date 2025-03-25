@@ -31,22 +31,22 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=development
-      - WATCHPACK_POLLING=true
+      - WATCHPACK_POLLING=1000
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - db
     networks:
       - auth_network
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
+      - .:/app:ro  # Modo somente leitura para evitar escritas desnecessárias
+      - node_modules:/app/node_modules  # Volume nomeado para persistência
+      - next_cache:/app/.next  # Volume nomeado para o cache do Next.js
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 4G
         reservations:
-          memory: 512M
+          memory: 1G
     command: >
       sh -c "npm rebuild @tailwindcss/oxide --platform=linux --arch=x64 --libc=musl &&
              npx prisma generate &&
@@ -76,6 +76,8 @@ services:
 
 volumes:
   data_sql:
+  node_modules:  # Declarado como volume nomeado
+  next_cache:    # Declarado como volume nomeado
 
 networks:
   auth_network:

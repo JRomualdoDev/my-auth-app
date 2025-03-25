@@ -30,7 +30,7 @@ export default function SignInForm({
         setSignInError(null);
 
         try {
-            const res = await axios_api.post('/auth/sign-in', data);
+            const res = await axios_api.post('/auth/login', data);
 
             if (res.status === 200) {
                 // Armazenar token no Zustand store

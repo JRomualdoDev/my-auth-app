@@ -1,22 +1,9 @@
-FROM node:18-alpine
-
+FROM node:20-alpine
 WORKDIR /app
-
-# Copiar arquivos de configuração
 COPY package.json package-lock.json* ./
-
-# Instalar dependências
 RUN npm ci
-
-# Instalar Prisma globalmente
+RUN npm rebuild
 RUN npm install -g prisma
-
-# Copiar código fonte
 COPY . .
-
-# Expor portas
 EXPOSE 3000
-
-# Comando para iniciar em desenvolvimento
-# O comando real será substituído pelo definido no docker-compose.yml
 CMD ["npm", "run", "dev"]

@@ -35,13 +35,18 @@ axios_api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    // Se o erro for 401 e não for uma tentativa de refresh
-    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/refresh') {
+    // Se o erro for 401 e não for uma tentativa de refresh ou login
+    if (
+      error.response?.status === 401 && 
+      !originalRequest._retry && 
+      originalRequest.url !== '/auth/refresh' &&
+      originalRequest.url !== '/auth/login'
+    ) {
       originalRequest._retry = true;
       
       try {
         // Tentar obter novo token
-        const response = await axios.post('/api/refresh');
+        const response = await axios.post('/api/auth/refresh');
         const { accessToken } = response.data;
         
         // Atualizar o token no store

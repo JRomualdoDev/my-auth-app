@@ -4,7 +4,7 @@ import { useAuthStore } from '@/lib/store/auth-store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import axios from 'axios';
+import axios_api from '@/lib/axios';
 
 export default function ProtectedRoute({
   children,
@@ -31,7 +31,7 @@ export default function ProtectedRoute({
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/logout');
+      await axios_api.post('/auth/logout');
       clearAuth();
       router.push('/');
     }

@@ -37,7 +37,7 @@ export function LoginForm({
     setLoginError(null);
     
     try {
-      const res = await axios_api.post('/login', data);
+      const res = await axios_api.post('/auth/login', data);
 
       if (res.status === 200) {
         // Armazenar token no Zustand store
@@ -52,7 +52,7 @@ export function LoginForm({
       }
     } catch (error: unknown) {
       if (axios_api.isAxiosError(error)) {
-        setLoginError('Login failed. Please try again.');
+        setLoginError('Invalid credentials.');
       } else {
         setLoginError('An unexpected error occurred');
         // console.error(error);
@@ -95,12 +95,12 @@ export function LoginForm({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    href="/"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input 
                   {...register("password")}
