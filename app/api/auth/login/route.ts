@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { loginSchema } from '@/components/login/login-schema';
-import { generateTokens, verifyPassword } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+import { generateTokens} from '@/lib/auth';
 import { generateCsrfToken } from '@/lib/csrf';
+import { authenticateUser } from '@/services/auth-service';
+import { AUTH_ERRORS } from '@/constants/error-messages';
 
 export async function POST(request: Request) {
     const body = await request.json()
@@ -10,26 +11,12 @@ export async function POST(request: Request) {
     try {
         const validatedData = loginSchema.parse(body);
 
-        const user = await prisma.user.findUnique({
-            where: {
-                email: validatedData.email
-            }
-        });
+        const user = await authenticateUser(validatedData);
 
         if(!user) {
             return NextResponse.json(
                 {
-                    "error": "Invalid Credentials"
-                },
-                { status: 401 }
-            )
-        }
-        const isValid = await verifyPassword(validatedData.password, user.password);
-
-        if(!isValid) {
-            return NextResponse.json(
-                {
-                    "error": "Invalid Credentials"
+                    "error": AUTH_ERRORS.INVALID_CREDENTIALS
                 },
                 { status: 401 }
             )
@@ -64,7 +51,7 @@ export async function POST(request: Request) {
     {
         return NextResponse.json(
             {              
-                "error": "Server Error"
+                "error": AUTH_ERRORS.SERVER_ERROR
             },
             { status: 500 }
         )

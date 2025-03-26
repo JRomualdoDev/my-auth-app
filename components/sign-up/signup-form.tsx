@@ -12,7 +12,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useAuthStore } from '@/lib/store/auth-store';	
 
 export default function SignUpForm({
     className,
@@ -20,7 +19,6 @@ export default function SignUpForm({
 }: React.ComponentPropsWithoutRef<'div'>) {
     const [signInError, setSignInError] = useState<string | null>(null);
     const router = useRouter();
-    const setAuth = useAuthStore((state) => state.setAuth);
 
     const { handleSubmit, register, formState: { errors} } = useForm({
         resolver: zodResolver(signUpSchema)

@@ -18,12 +18,28 @@ const axios_api = axios.create({
 axios_api.isAxiosError = axios.isAxiosError;
 
 // Interceptor para adicionar token a todas as requisições
+// Adicionar ao seu interceptor existente
 axios_api.interceptors.request.use(
   (config) => {
+    // Adicionar token de autenticação
     const token = useAuthStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Adicionar CSRF token para métodos que modificam dados
+    if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase() || '')) {
+      // Extrair o token CSRF do cookie
+      const csrfToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrf_token='))
+        ?.split('=')[1];
+        
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken;
+      }
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)

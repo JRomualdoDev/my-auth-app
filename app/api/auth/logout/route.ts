@@ -14,5 +14,14 @@ export async function POST() {
         secure: true
     });
 
+    response.cookies.set('csrf_token', '', {
+        httpOnly: true,
+        expires: new Date(0),
+        path: '/',
+        sameSite: 'strict',
+        // secure: process.env.NODE_ENV === 'production'
+        secure: true
+    });
+
     return response;
 }
