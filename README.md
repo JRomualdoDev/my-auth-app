@@ -24,7 +24,7 @@
   <summary>Itens</summary>
   <ol>
     <li>
-      <a href="#about-the-project">Sobre o projeto</a>
+      <a href="#about-the-project">Sobre o Projeto</a>
       <ul>
         <li><a href="#built-with">Construido com </a></li>
       </ul>
@@ -123,6 +123,12 @@ Project Link: [https://github.com/JRomualdoDev/my-auth-app](https://github.com/J
 
 <p align="right">(<a href="#readme-top">voltar ao topo</a>)</p>
 
+[stars-url]: https://github.com/JRomualdoDev/todo-list-app/stargazers
+[stars-shield]: https://img.shields.io/github/stars/JRomualdoDev/todo-list-app?style=for-the-badge
+[issues-url]: https://github.com/JRomualdoDev/todo-list-app/issues
+[issues-shield]: https://img.shields.io/github/issues/JRomualdoDev/todo-list-app?style=for-the-badge
+[license-url]: https://github.com/JRomualdoDev/todo-list-app/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/JRomualdoDev/todo-list-app?style=for-the-badge
 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
