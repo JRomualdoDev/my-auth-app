@@ -7,7 +7,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/JRomualdoDev/my-auth-app">
-    <img src="https://github.com/JRomualdoDev/my-auth-app/blob/main/public/screen.png?raw=true" alt="Logo" width="880" height="480">
+    <img src="https://raw.githubusercontent.com/JRomualdoDev/my-auth-app/refs/heads/master/public/screen.png?raw=true" alt="Logo" width="880" height="480">
   </a>
 
   <h3 align="center">My auth App</h3>
